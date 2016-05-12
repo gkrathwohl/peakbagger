@@ -16,6 +16,10 @@ namespace peaker.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public int? athleteId { get; set; }
+
+        //public virtual Athlete Athlete { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

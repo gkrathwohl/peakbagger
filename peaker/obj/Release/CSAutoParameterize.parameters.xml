@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
   <parameter name="DefaultConnection-Web.config Connection String" description="DefaultConnection Connection String used in web.config by the application to access the database." defaultValue="Data Source=(LocalDb)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\aspnet-peaker-20160319024000.mdf;Initial Catalog=aspnet-peaker-20160319024000;Integrated Security=True" tags="SqlConnectionString">
-    <parameterEntry kind="XmlFile" scope="C:\\dev\\peaker\\peaker\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
+    <parameterEntry kind="XmlFile" scope="D:\\Dev\\peakbagger\\peaker\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
+  </parameter>
+  <parameter name="AzureWebJobsStorage-Web.config Connection String" description="AzureWebJobsStorage Connection String used in web.config by the application to access the database." defaultValue="DefaultEndpointsProtocol=https;AccountName=defaultsqleastus21541;AccountKey=nedDLEBHFYaHRta8KquF/ajumLEEOor/kG/kCTTNTn+V6R+iJrnDpYZ19pcCzPddyAP37Qg2R9GVn3e4CnPJYA==;BlobEndpoint=https://defaultsqleastus21541.blob.core.windows.net/;TableEndpoint=https://defaultsqleastus21541.table.core.windows.net/;QueueEndpoint=https://defaultsqleastus21541.queue.core.windows.net/;FileEndpoint=https://defaultsqleastus21541.file.core.windows.net/" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\Dev\\peakbagger\\peaker\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='AzureWebJobsStorage']/@connectionString" />
   </parameter>
 </parameters>

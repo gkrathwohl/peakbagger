@@ -9,6 +9,7 @@ namespace peaker.ViewModels
     public class AthleteDetailViewModel
     {
         public string AthleteName { get; set; }
+        public int AthleteId { get; set; }
         public int IndexedActivityCount { get; set; }
         public IEnumerable<SummitCompletion> AthleteSummitCompletions { get; set; }
     }

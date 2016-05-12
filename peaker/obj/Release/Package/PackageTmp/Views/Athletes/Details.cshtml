@@ -1,0 +1,109 @@
+﻿@model peaker.ViewModels.AthleteDetailViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    @Styles.Render("~/Content/css")
+
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet' />
+
+    <script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            /*position: absolute;
+            top: 0;
+            bottom: 0;*/
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <p>Welcome, @Model.AthleteName</p>
+    <p>We've indexed @Model.IndexedActivityCount activities</p>
+    <p>You've summited @Model.AthleteSummitCompletions.Count() peaks!!</p>
+
+    <div class="col-lg-5">
+        <table class="table">
+            <tr>
+                <th>
+                    Summit Completions
+                </th>
+                <th>
+                    Height
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Strava
+                </th>
+            </tr>
+
+            @foreach (var peak in Model.AthleteSummitCompletions)
+            {
+                <tr>
+                    <td>
+                        @peak.Peak.Name
+                    </td>
+                    <td>
+                        @((int)(peak.Peak.ELEV_METER * 3.28084)) ft
+                    </td>
+                    <td>
+                        date
+                    </td>
+                    <td>
+                        <a href="http://strava.com/activities/@peak.StravaActivityId">Activity</a>
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+    <div class="col-lg-7">
+        <div id='map'></div>
+    </div>
+
+    <script>
+
+        L.mapbox.accessToken = 'pk.eyJ1IjoiZ2tyYXRod29obCIsImEiOiJ5bXlHNXJJIn0.gjNMPWKFNso_Z5EmEjsFGA';
+        var map = L.mapbox.map('map', 'mapbox.streets')
+            .setView([40, -74.50], 9);
+
+        $(document).ready(function () {
+            var actionUrl = '@Url.Action("GetAthleteSummits", "Athletes", new { id=8 })';
+            $.getJSON(actionUrl, displayData);
+        });
+
+        function displayData(response) {
+            if (response != null) {
+                console.log(response);
+            }
+
+            $.each(response, function (i, summit) {
+                console.log(summit.Peak.Latitude);
+                L.marker([summit.Peak.Latitude, summit.Peak.Longitude]).addTo(map);
+            });
+        }
+
+    </script>
+
+</body>
+</html>

@@ -12,6 +12,7 @@ namespace peaker.Models
         public int StravaId { get; set; }
         public string Name { get; set; }
         public string AccessToken { get; set; }
+        public string UserId { get; set; }
 
         public virtual IEnumerable<SummitCompletion> SummitCompletions { get; set; }
     }

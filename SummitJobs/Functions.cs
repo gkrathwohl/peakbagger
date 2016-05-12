@@ -24,7 +24,7 @@ namespace SummitJobs
 
         // This function will get triggered/executed when a new message is written 
         // on an Azure Queue called queue.
-        public static void ParseActivities([QueueTrigger("peakqueue")] string code, TextWriter log)
+        public static void ParseActivities([QueueTrigger("peakqueue")] int code, TextWriter log)
         {
             try
             {
@@ -49,16 +49,19 @@ namespace SummitJobs
             db.SaveChanges();
         }
 
-        private static async Task parseActivitiesAsync(string code)
+        private static async Task parseActivitiesAsync(int athleteId)
         {
             using (var db = new PeakDbContext())
             {
                 string clientId = "3764";
                 string clientSecret = "e0b897e6bc461b774c73fbff6936f656d2e376f3";
 
+                var athlete = db.Athletes.Find(athleteId);
+                var accessToken = athlete.AccessToken;
+
                 // Get strava token
                 WebAuthentication auth = new WebAuthentication();
-                await auth.GetTokenAsync(clientId, clientSecret, code);
+                auth.AccessToken = accessToken;
 
                 StravaClient client = new StravaClient(auth);
 
@@ -67,13 +70,6 @@ namespace SummitJobs
 
                 // Retreive athlete or create new one
                 Athlete currAthlete = db.Athletes.Where(m => m.StravaId == stravaAthlete.Id).FirstOrDefault();
-                if (currAthlete == null){
-                    currAthlete = new Athlete();
-                    currAthlete.Name = stravaAthlete.FirstName;
-                    currAthlete.StravaId = (int)stravaAthlete.Id;
-                    db.Athletes.Add(currAthlete);
-                    db.SaveChanges();
-                }
 
                 var allActivities = client.Activities.GetAllActivities();
 
@@ -81,6 +77,8 @@ namespace SummitJobs
                 foreach(var activity in allActivities)
                 {
                     count++;
+
+                    Console.WriteLine("activity " + count.ToString());
 
                     // continue if activity has already been indexed
                     if (db.IndexedActivities.Any(m => m.StravaActivityId == activity.Id))
@@ -124,6 +122,7 @@ namespace SummitJobs
                             var summitCompletion = new SummitCompletion();
                             summitCompletion.Peak = peak;
                             summitCompletion.Athlete = currAthlete;
+                            summitCompletion.Date = fullActivity.DateTimeStart;
                             summitCompletion.StravaActivityId = (int)fullActivity.Id;
 
                             db.SummitCompletions.Add(summitCompletion);

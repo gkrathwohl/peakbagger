@@ -8,34 +8,36 @@ using System.Web;
 using System.Web.Mvc;
 using peaker.Models;
 using peaker.ViewModels;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.WindowsAzure.Storage.Queue;
+using Newtonsoft.Json;
+using Microsoft.WindowsAzure.Storage;
+using System.Configuration;
 
 namespace peaker.Controllers
 {
     public class AthletesController : Controller
     {
         private PeakDbContext db = new PeakDbContext();
+        private CloudQueue parseActivitiesQueue;
 
         // GET: Athletes
         public ActionResult Index()
         {
-            return View(db.Athletes.ToList());
-        }
+            // get logged in user
+            ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>().FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
 
-        // GET: Athletes/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Athlete athlete = db.Athletes.Find(id);
+            //get athlete
+            var athlete = db.Athletes.FirstOrDefault(m => m.UserId == user.Id);
+
             if (athlete == null)
             {
-                return HttpNotFound();
+                return View("Connect", null);
             }
 
-
             AthleteDetailViewModel ViewModel = new AthleteDetailViewModel();
+            ViewModel.AthleteId = athlete.Id;
             ViewModel.AthleteName = athlete.Name;
             ViewModel.IndexedActivityCount = db.IndexedActivities.Where(m => m.Athlete.Id == athlete.Id).Count();
             ViewModel.AthleteSummitCompletions = db.SummitCompletions.Where(m => m.Athlete.Id == athlete.Id).Include(m => m.Peak).ToList();
@@ -60,84 +62,11 @@ namespace peaker.Controllers
             return Json(summits, JsonRequestBehavior.AllowGet);
         }
 
-        // GET: Athletes/Create
-        public ActionResult Create()
+        public JsonResult ProccessActivities(int id)
         {
-            return View();
-        }
+            ProccessActivitiesForAthlete(id);
 
-        // POST: Athletes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name")] Athlete athlete)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Athletes.Add(athlete);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(athlete);
-        }
-
-        // GET: Athletes/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Athlete athlete = db.Athletes.Find(id);
-            if (athlete == null)
-            {
-                return HttpNotFound();
-            }
-            return View(athlete);
-        }
-
-        // POST: Athletes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name")] Athlete athlete)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(athlete).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(athlete);
-        }
-
-        // GET: Athletes/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Athlete athlete = db.Athletes.Find(id);
-            if (athlete == null)
-            {
-                return HttpNotFound();
-            }
-            return View(athlete);
-        }
-
-        // POST: Athletes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Athlete athlete = db.Athletes.Find(id);
-            db.Athletes.Remove(athlete);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            return Json("proccessing", JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)
@@ -147,6 +76,33 @@ namespace peaker.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private void ProccessActivitiesForAthlete(int athleteId)
+        {
+            InitializeStorage();
+
+            // Kick off the background work
+            var message = new CloudQueueMessage(JsonConvert.SerializeObject(athleteId));
+            parseActivitiesQueue.AddMessage(message);
+        }
+
+        private void InitializeStorage()
+        {
+            // Open storage account using credentials from .cscfg file.
+            var storageAccount = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["AzureWebJobsStorage"].ToString());
+
+            // Get context object for working with queues, and 
+            // set a default retry policy appropriate for a web user interface.
+            CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
+
+            //queueClient.DefaultRequestOptions.RetryPolicy = new LinearRetry(TimeSpan.FromSeconds(3), 3);
+
+            // Get a reference to the queue.
+            parseActivitiesQueue = queueClient.GetQueueReference("peakqueue");
+
+            // Create the queue if it doesn't already exist
+            parseActivitiesQueue.CreateIfNotExists();
         }
     }
 }

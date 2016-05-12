@@ -374,6 +374,7 @@
     <Content Include="Views\Athletes\Edit.cshtml" />
     <Content Include="Views\Athletes\Index.cshtml" />
     <Content Include="Views\Strava\Connect.cshtml" />
+    <Content Include="Views\Athletes\Connect.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Peaks\" />
