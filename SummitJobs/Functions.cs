@@ -140,7 +140,7 @@ namespace SummitJobs
 
                 db.SaveChanges();
 
-
+                Console.WriteLine("done");
             }
         }
 

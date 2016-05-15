@@ -34,7 +34,7 @@ namespace peaker.Controllers
             return View();
         }
 
-        public async Task<ActionResult> Connect(string code)
+        public async Task<RedirectToRouteResult> Connect(string code)
         {
             // Connect to Strava
             string clientId = "3764";
@@ -61,8 +61,11 @@ namespace peaker.Controllers
                 db.SaveChanges();
             }
 
-            // Render the view
-            return View();
+            // Start background work  - todo - will need some way of running this periodically in the background
+            QueueHelper.ProccessActivitiesForAthlete(currAthlete.Id);
+
+            // redirect to athlete index
+            return RedirectToAction("index", "athlete", null);
         }
 
     }

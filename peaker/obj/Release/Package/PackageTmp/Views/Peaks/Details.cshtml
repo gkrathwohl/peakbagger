@@ -1,0 +1,68 @@
+﻿@model peaker.Models.Peak
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div>
+        <h4>Peak</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.STCTYFIPS)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.STCTYFIPS)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.ELEV_METER)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.ELEV_METER)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Latitude)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Latitude)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Longitude)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Longitude)
+            </dd>
+    
+        </dl>
+    </div>
+
+    Recent Summits
+    <table>
+
+    </table>
+
+</body>
+</html>

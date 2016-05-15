@@ -257,17 +257,14 @@
     <Compile Include="Controllers\AthletesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\PeaksController.cs" />
     <Compile Include="Controllers\StravaController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\GeoUtils.cs" />
+    <Compile Include="Helpers\QueueHelper.cs" />
     <Compile Include="Helpers\WebAuthentication.cs" />
-    <Compile Include="Migrations\201604080349344_v.01.cs" />
-    <Compile Include="Migrations\201604080349344_v.01.Designer.cs">
-      <DependentUpon>201604080349344_v.01.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -310,12 +307,15 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <None Include="Properties\PublishProfiles\peaker %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\peaker %283%29.pubxml" />
     <None Include="Properties\PublishProfiles\peaker.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
     <Content Include="Scripts\ai.0.15.0-build58334.js" />
     <Content Include="Scripts\ai.0.15.0-build58334.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\strava-peaks.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -375,10 +375,13 @@
     <Content Include="Views\Athletes\Index.cshtml" />
     <Content Include="Views\Strava\Connect.cshtml" />
     <Content Include="Views\Athletes\Connect.cshtml" />
+    <Content Include="Views\Peaks\Create.cshtml" />
+    <Content Include="Views\Peaks\Delete.cshtml" />
+    <Content Include="Views\Peaks\Details.cshtml" />
+    <Content Include="Views\Peaks\Edit.cshtml" />
+    <Content Include="Views\Peaks\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Peaks\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Project_Readme.html" />
   </ItemGroup>
@@ -387,11 +390,6 @@
       <Project>{2e1452fe-f20d-4a62-8a42-bfa81df66424}</Project>
       <Name>PeakerModels</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201604080349344_v.01.resx">
-      <DependentUpon>201604080349344_v.01.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

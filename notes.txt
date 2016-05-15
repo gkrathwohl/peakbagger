@@ -1,0 +1,28 @@
+Website: http://strava-peaks.azurewebsites.net/
+Webjobs logs: https://strava-peaks.scm.azurewebsites.net/azurejobs/#/jobs/continuous/SummitJobs 
+
+
+TODO
+- Get azure storage emulator working for dev
+    - fascinating thread here (https://github.com/Azure/azure-webjobs-sdk/issues/53) it only got resolved 9 days ago... Basically, the easiest way is just to create a new storage accoutn
+- Get webjobs logs working - https://strava-peaks.scm.azurewebsites.net/azurejobs/#/jobs/continuous/SummitJobs
+- Start proccessing after connecting to strava - right now you have to go to /athletes/proccessActivity/#
+- Map changes
+    a. Initial view should show extent of all summits
+    b. Summit icons should be a different color (strava color)
+    c. Maybe when you click an icon, it should center on that.
+- Main page showing summit completions should only show unique summits
+    a. also, why are there multiple summit completions for a single activity?
+    b. When you click on the summit, it can show all of your activities that summited it.
+- Peakbagging lists
+
+Notes:
+
+
+need to schedule the proccessing somehow. It can go when you first connect, but after that, how often?
+First, when you do process, it should check the activities against indexed activities. right now, it goes through all activities, and if skips those that are already indexed. Maybe before that, you could just filter the list. Or, you could compare the count and only process if there's more activities than indexed activities.
+
+1. make sure Peaks are in database
+2. run web app and kick off proccessActivity
+3. make sure activities aren't indexed
+4. run summit jobs

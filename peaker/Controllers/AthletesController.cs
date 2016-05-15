@@ -14,19 +14,24 @@ using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 using Microsoft.WindowsAzure.Storage;
 using System.Configuration;
+using peaker.Helpers;
 
 namespace peaker.Controllers
 {
     public class AthletesController : Controller
     {
         private PeakDbContext db = new PeakDbContext();
-        private CloudQueue parseActivitiesQueue;
 
         // GET: Athletes
         public ActionResult Index()
         {
             // get logged in user
             ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>().FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
+
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account", null);
+            }
 
             //get athlete
             var athlete = db.Athletes.FirstOrDefault(m => m.UserId == user.Id);
@@ -64,7 +69,7 @@ namespace peaker.Controllers
 
         public JsonResult ProccessActivities(int id)
         {
-            ProccessActivitiesForAthlete(id);
+            QueueHelper.ProccessActivitiesForAthlete(id);
 
             return Json("proccessing", JsonRequestBehavior.AllowGet);
         }
@@ -78,31 +83,6 @@ namespace peaker.Controllers
             base.Dispose(disposing);
         }
 
-        private void ProccessActivitiesForAthlete(int athleteId)
-        {
-            InitializeStorage();
 
-            // Kick off the background work
-            var message = new CloudQueueMessage(JsonConvert.SerializeObject(athleteId));
-            parseActivitiesQueue.AddMessage(message);
-        }
-
-        private void InitializeStorage()
-        {
-            // Open storage account using credentials from .cscfg file.
-            var storageAccount = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["AzureWebJobsStorage"].ToString());
-
-            // Get context object for working with queues, and 
-            // set a default retry policy appropriate for a web user interface.
-            CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
-
-            //queueClient.DefaultRequestOptions.RetryPolicy = new LinearRetry(TimeSpan.FromSeconds(3), 3);
-
-            // Get a reference to the queue.
-            parseActivitiesQueue = queueClient.GetQueueReference("peakqueue");
-
-            // Create the queue if it doesn't already exist
-            parseActivitiesQueue.CreateIfNotExists();
-        }
     }
 }

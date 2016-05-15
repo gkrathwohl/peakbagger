@@ -223,7 +223,5 @@ D:\Dev\peakbagger\peaker\bin\ru\System.Spatial.resources.dll
 D:\Dev\peakbagger\peaker\bin\zh-Hans\System.Spatial.resources.dll
 D:\Dev\peakbagger\peaker\bin\zh-Hant\System.Spatial.resources.dll
 D:\Dev\peakbagger\peaker\obj\Release\Peaker.csprojResolveAssemblyReference.cache
-D:\Dev\peakbagger\peaker\obj\Release\peaker.Migrations.v01.resources
-D:\Dev\peakbagger\peaker\obj\Release\Peaker.csproj.GenerateResource.Cache
 D:\Dev\peakbagger\peaker\obj\Release\peaker.dll
 D:\Dev\peakbagger\peaker\obj\Release\peaker.pdb

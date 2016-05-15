@@ -75,7 +75,7 @@
             {
                 <tr>
                     <td>
-                        @peak.Peak.Name
+                        @Html.ActionLink(@peak.Peak.Name, "Details", "Peaks", new { id = @peak.Peak.Id }, null)
                     </td>
                     <td>
                         @((int)(peak.Peak.ELEV_METER * 3.28084)) ft
@@ -97,10 +97,7 @@
 
     <script>
 
-        //L.mapbox.accessToken = 'pk.eyJ1IjoiZ2tyYXRod29obCIsImEiOiJ5bXlHNXJJIn0.gjNMPWKFNso_Z5EmEjsFGA';
         mapboxgl.accessToken = 'pk.eyJ1IjoiZ2tyYXRod29obCIsImEiOiJ5bXlHNXJJIn0.gjNMPWKFNso_Z5EmEjsFGA';
-        //var map = L.mapbox.map('map', 'mapbox.streets')
-        //    .setView([40, -74.50], 9);
 
         var featureList = [];
 
@@ -119,7 +116,8 @@
                     "type": "Feature",
                     "properties": {
                         "description": "<div class=\"marker-title\">" + summit.Peak.Name + "</div><p>Elevation: " + (summit.Peak.ELEV_METER * 3.28084).toFixed(0) + "ft </p><p><a href=\"http://strava.com/activities/" + summit.StravaActivityId + "\" target=\"_blank\" title=\"Opens in a new window\">View on Strava</a></p>",
-                        "marker-symbol": "mountain"
+                        "marker-symbol": "mountain",
+                        "icon-color": "#FF5900"
                     },
                     "geometry": {
                         "type": "Point",
@@ -127,6 +125,8 @@
                     }
                 });
             });
+
+
 
             var markers = {
                 "type": "FeatureCollection",
@@ -157,6 +157,14 @@
                         "icon-allow-overlap": true
                     }
                 });
+
+                // fit to bounds
+                var bounds = new mapboxgl.LngLatBounds();
+                markers.features.forEach(function (feature) {
+                    bounds.extend(feature.geometry.coordinates);
+                });
+                map.fitBounds(bounds);
+
             });
 
 
@@ -170,6 +178,8 @@
                 }
 
                 var feature = features[0];
+
+                map.flyTo({ center: feature.geometry.coordinates });
 
                 // Populate the popup and set its coordinates
                 // based on the feature found.

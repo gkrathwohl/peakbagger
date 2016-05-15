@@ -25,7 +25,7 @@ namespace PeakETL
                 Console.WriteLine(String.Format("{0} existing peaks found in database", db.Peaks.Count()));
 
 
-                var geoJsonPath = "C:/dev/peaker/PeakETL/Data/peaks.geojson";
+                var geoJsonPath = "D:/Dev/peakbagger/PeakETL/Data/peaks.geojson";
 
                 Console.WriteLine("Reading geoJsonText from " + geoJsonPath);
 
